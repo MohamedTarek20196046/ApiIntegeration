@@ -35,9 +35,12 @@ jobs:
         run: |
           npm install -g newman
       #Run collection
-      - name: run collection
+      - name: run collection1
         run: |
           newman run ./tutoruu.postman_collection.json 
+      #Run collection2
+      - name: run collection2
+        run: |
           newman run ./tutoruu1.postman_collection.json
       
         
