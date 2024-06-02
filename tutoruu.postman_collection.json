@@ -15,7 +15,7 @@
 						"exec": [
 							"const jsonbody = pm.response.json()\r",
 							"pm.test(\"check if it is successfull\",function(){\r",
-							"    pm.response.to.have.status(1500);\r",
+							"    pm.response.to.have.status(200);\r",
 							"})\r",
 							"\r",
 							"pm.test(\"check if responseTime is less than 1.5 sec\",function(){\r",
