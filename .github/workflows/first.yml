@@ -48,7 +48,6 @@ jobs:
       - name: Publish report
         uses: actions/checkout@v2
         with:
-          name: Reports
           path: SampleArtifact
         
         
