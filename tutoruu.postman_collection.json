@@ -19,7 +19,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"check if responseTime is less than 1.5 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500)\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
 							"})"
 						],
 						"type": "text/javascript",
