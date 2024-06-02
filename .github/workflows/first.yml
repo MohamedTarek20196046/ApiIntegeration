@@ -43,10 +43,10 @@ jobs:
       #Run collection
       - name: run collection
         run: |
-          newman run ./tutoruu.postman_collection.json -r htmlextra --reporter-htmlextra-export SampleArtifact/htmlreport.html > SampleArtifact/runreport1.html
+          newman run ./tutoruu.postman_collection.json -r htmlextra --reporter-htmlextra-export SampleArtifact/htmlreport.html
       #generate report
       - name: Publish report
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
           name: Reports
           path: SampleArtifact
