@@ -46,7 +46,7 @@ jobs:
           newman run ./tutoruu.postman_collection.json -r htmlextra --reporter-htmlextra-export SampleArtifact/htmlreport.html
       #generate report
       - name: Publish report
-        uses: actions/checkout@v2
+        uses: actions/upload-artifact@v2
         with:
           path: SampleArtifact
         
