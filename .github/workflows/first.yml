@@ -25,11 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # creating folder
-      - name: create dir
-        run: mkdir SampleArtifact
-        
-
       # Installing node
       - name: Install node
         uses: actions/checkout@v4
@@ -39,16 +34,11 @@ jobs:
       - name: Install newman
         run: |
           npm install -g newman
-          npm install -g newman-reporter-htmlextra
       #Run collection
       - name: run collection
         run: |
           newman run ./tutoruu.postman_collection.json 
-      #generate report
-      - name: Publish report
-        uses: actions/upload-artifact@v2
-        with:
-          path: SampleArtifact
+      
         
         
       
