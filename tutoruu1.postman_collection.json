@@ -1,0 +1,18 @@
+{
+	"info": {
+		"_postman_id": "4a791c13-3524-45ea-aef6-e967eb634156",
+		"name": "tutoruu1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18956947"
+	},
+	"item": [
+		{
+			"name": "getquestions2",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

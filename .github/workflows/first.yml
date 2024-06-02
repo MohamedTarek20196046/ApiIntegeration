@@ -38,6 +38,7 @@ jobs:
       - name: run collection
         run: |
           newman run ./tutoruu.postman_collection.json 
+          newman run ./tutoruu1.postman_collection.json
       
         
         
