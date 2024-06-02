@@ -27,7 +27,7 @@ jobs:
 
       # creating folder
       - name: create dir
-        run: mkdir SampleArtifact
+        run: mkdir -p SampleArtifact
         
 
       # Installing node
@@ -43,7 +43,7 @@ jobs:
       #Run collection
       - name: run collection
         run: |
-          newman run ./tutoruu.postman_collection.json 
+          newman run ./tutoruu.postman_collection.json -r htmlextra --reporter-htmlextra-export SampleArtifact/htmlreport.html > SampleArtifact/runreport1.html
       #generate report
       - name: Publish report
         uses: actions/checkout@v4
