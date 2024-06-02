@@ -27,7 +27,7 @@ jobs:
 
       # creating folder
       - name: create dir
-        run: mkdir -p SampleArtifact
+        run: mkdir SampleArtifact
         
 
       # Installing node
