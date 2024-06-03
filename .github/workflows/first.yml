@@ -34,14 +34,10 @@ jobs:
       - name: Install newman
         run: |
           npm install -g newman
-      #Run collection
-      - name: run collection1
+      #Run Searchcollection
+      - name: TutorSearch
         run: |
-          newman run ./tutoruu.postman_collection.json 
-      #Run collection2
-      - name: run collection2
-        run: |
-          newman run ./tutoruu1.postman_collection.json
+          newman run ./tutoruu1.TutorSearch.json
       
         
         
