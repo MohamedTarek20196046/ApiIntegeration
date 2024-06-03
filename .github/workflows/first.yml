@@ -37,7 +37,7 @@ jobs:
       #Run Searchcollection
       - name: TutorSearch
         run: |
-          newman run ./tutoruu1.TutorSearch.json
+          newman run ./TutorSearch.postman_collection.json
       
         
         
