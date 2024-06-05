@@ -440,9 +440,6 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.collectionVariables.set(\"password1\",pm.collectionVariables.get(\"password\"))\r",
-							"pm.collectionVariables.set(\"password\",pm.collectionVariables.get(\"newpassword\"))\r",
-							"pm.collectionVariables.set(\"newpassword\",pm.collectionVariables.get(\"password1\"))\r",
 							"const jsonbody = pm.response.json()\r",
 							"pm.test(\"validate data \",function(){\r",
 							"    pm.expect(jsonbody.user.user.username).eqls(pm.collectionVariables.get(\"username\"))\r",
@@ -464,7 +461,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{newpassword}}\"\r\n}",
+					"raw": "{\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{password}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -821,16 +818,6 @@
 			"type": "string"
 		},
 		{
-			"key": "password1",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "newpassword",
-			"value": "Mt123457$",
-			"type": "string"
-		},
-		{
 			"key": "freeTrial",
 			"value": "true",
 			"type": "string"
@@ -883,6 +870,10 @@
 			"key": "userId",
 			"value": "6627960c9c5403253376bdf9",
 			"type": "string"
+		},
+		{
+			"key": "password1",
+			"value": ""
 		}
 	]
 }
