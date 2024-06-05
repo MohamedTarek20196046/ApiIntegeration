@@ -38,6 +38,16 @@ jobs:
       - name: TutorSearch
         run: |
           newman run ./TutorSearch.postman_collection.json
+       #Run Profilecollection
+      - name: TutorProfile
+        run: |
+          newman run ./TutorProfile.postman_collection.json
+
+
+
+
+
+          
       
         
         
