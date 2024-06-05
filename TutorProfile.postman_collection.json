@@ -1,36 +1,27 @@
 {
 	"info": {
-		"_postman_id": "d6938b9a-1e12-4341-a1ba-7bf6eaea5215",
-		"name": "TutorSearch",
+		"_postman_id": "d82cc068-a0df-4a81-83a0-0c07656357be",
+		"name": "TutorProfile",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18956947"
 	},
 	"item": [
 		{
-			"name": "getTutors",
+			"name": "ValidLogin",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\",function(){\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"check if tutor is loggedIn\",function(){\r",
+							"    pm.expect(jsonbody.loggedIn).eqls(true)\r",
 							"})\r",
-							"pm.test(\"check user is tutor\",function(){\r",
-							"    pm.expect(jsonbody[0].rate).to.exist\r",
-							"    pm.expect(jsonbody[0].courses).to.exist\r",
-							"    pm.expect(jsonbody[0].schedule).to.exist\r",
+							"pm.test(\"validate data\",function(){\r",
+							"    pm.expect(jsonbody.user.email).eqls(pm.collectionVariables.get(\"email\"))\r",
+							"    pm.expect(jsonbody.token).to.exist\r",
 							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check tutors are sorted by newest\",function(){\r",
-							"    const date1 = new Date(jsonbody[0].creation_date)\r",
-							"    const date2 = new Date(jsonbody[1].creation_date)\r",
-							"    pm.expect(date1).to.be.greaterThan(date2)\r",
-							"\r",
-							"})\r",
+							"pm.collectionVariables.set(\"token\",jsonbody.token)\r",
 							""
 						],
 						"type": "text/javascript",
@@ -49,228 +40,50 @@
 				}
 			],
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SearchByname",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\",function(){\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if the retrieved tutor matches the search\",function(){\r",
-							"    pm.expect(jsonbody[0].user.name).eqls(pm.collectionVariables.get(\"name\"))\r",
-							"})\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
 					}
 				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
 				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?query={{name}}",
+					"raw": "https://affiliates.tutoruu.com/api/login",
 					"protocol": "https",
 					"host": [
-						"api",
+						"affiliates",
 						"tutoruu",
 						"com"
 					],
 					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "query",
-							"value": "{{name}}"
-						}
+						"api",
+						"login"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "SearchByInvalidName",
+			"name": "InvalidEmail",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\",function(){\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"check if tutor is not loggedIn\",function(){\r",
+							"    pm.expect(jsonbody.loggedIn).eqls(false)\r",
 							"})\r",
-							"pm.test(\"check that the response is empty\",function(){\r",
-							"    pm.expect(jsonbody).to.be.empty\r",
+							"pm.test(\"check response message\",function(){\r",
+							"    pm.expect(jsonbody.message).eqls(\"User not found. Please sign up instead\")\r",
 							"})\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?query={{invalidname}}",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "query",
-							"value": "{{invalidname}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SearchByClass",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if the tutor teaches this class\",function(){\r",
-							"    const courses = jsonbody[0].courses\r",
-							"    let bool=false\r",
-							"    courses.forEach(course => {\r",
-							"    if(course.class.name===pm.collectionVariables.get(\"class\")){\r",
-							"        bool = true\r",
-							"        return\r",
-							"    }\r",
-							"    pm.expect(bool).eqls(true)\r",
-							"});\r",
-							"})\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?query={{class}}",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "query",
-							"value": "{{class}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "filterByday",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if tutors teaches on this day\",function(){\r",
-							"    const days = jsonbody[0].schedule\r",
-							"    let bool=false\r",
-							"    days.forEach(i => {\r",
-							"    if(i.day===pm.collectionVariables.get(\"day\")){\r",
-							"        if(i.slots.length>0){\r",
-							"            bool = true\r",
-							"            return\r",
-							"        }\r",
-							"    }\r",
-							"}\r",
-							");\r",
-							"pm.expect(bool).eqls(true)\r",
-							"})"
+							"pm.test(\"check status is 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -285,10 +98,225 @@
 				}
 			],
 			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"tutor1232323@test.com\",\r\n    \"password\":\"Mt123456$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://affiliates.tutoruu.com/api/login",
+					"protocol": "https",
+					"host": [
+						"affiliates",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidPassword",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"pm.test(\"check if tutor is not loggedIn\",function(){\r",
+							"    pm.expect(jsonbody.loggedIn).eqls(false)\r",
+							"})\r",
+							"pm.test(\"check response message\",function(){\r",
+							"    pm.expect(jsonbody.message).eqls(\"Invalid password\")\r",
+							"})\r",
+							"pm.test(\"check status is 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"tutor1@test.com\",\r\n    \"password\":\"Mt1234599$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://affiliates.tutoruu.com/api/login",
+					"protocol": "https",
+					"host": [
+						"affiliates",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authme",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"\r",
+							"pm.test(\"check this is the valid user\",function(){\r",
+							"    pm.expect(jsonbody.email).eqls(pm.collectionVariables.get(\"email\"))\r",
+							"})\r",
+							"pm.test(\"check status is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.collectionVariables.set(\"username\",jsonbody.username)\r",
+							"pm.collectionVariables.set(\"id\",jsonbody.tutor)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://api.tutoruu.com/Users/auth/me",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"Users",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidAuth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const body = pm.response.text()\r",
+							"pm.test(\"check response message\",function(){\r",
+							"    pm.expect(body).eqls(\"You're not logged in\")\r",
+							"})\r",
+							"pm.test(\"check status is 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV3123CJ9.eyJpZCI6IjY2Mjc5NjBjOWM1NDAzMjUzMzc2YmRmOSIsImVtYWlsIjoidHV0b3IxQHRlc3QuY29tIiwiaWF0IjoxNzE3NTkwNzcwLCJleHAiOjE3MTc3NjM1NzB9.kbvyvCifzODJLaBxEDXDZrbzSDLDZ1kZL1jiVQTfhs4",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?day={{day}}",
+					"raw": "https://api.tutoruu.com/Users/auth/me",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"Users",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidSearch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"pm.test(\"check response message\",function(){\r",
+							"    pm.expect(jsonbody.message).eqls(\"Tutor not found\")\r",
+							"})\r",
+							"pm.test(\"check status is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.tutoruu.com/tutors/profile/{{invaliduser}}",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -297,40 +325,396 @@
 					],
 					"path": [
 						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "day",
-							"value": "{{day}}"
-						}
+						"profile",
+						"{{invaliduser}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "FilterByPrice",
+			"name": "BookingsById",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"check number of bookings\",function(){\r",
+							"    pm.expect(jsonbody.bookings_length).greaterThan(28)\r",
+							"    pm.expect(jsonbody.sessions_length).greaterThan(35)\r",
 							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"pm.test(\"check status is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.tutoruu.com/Tutors/booked-slots/{{id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"Tutors",
+						"booked-slots",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BookingsInvalidId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"pm.test(\"check response message\",function(){\r",
+							"    pm.expect(jsonbody.message).eqls(\"Internal server error\")\r",
 							"})\r",
-							"pm.test(\"check if the tutor's rate is within the range\", function () {\r",
+							"pm.test(\"check status is 500\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.tutoruu.com/Tutors/booked-slots/{{invalidid}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"Tutors",
+						"booked-slots",
+						"{{invalidid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatePassword",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"password1\",pm.collectionVariables.get(\"password\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"password1\",pm.collectionVariables.get(\"password\"))\r",
+							"pm.collectionVariables.set(\"password\",pm.collectionVariables.get(\"newpassword\"))\r",
+							"pm.collectionVariables.set(\"newpassword\",pm.collectionVariables.get(\"password1\"))\r",
+							"const jsonbody = pm.response.json()\r",
+							"pm.test(\"validate data \",function(){\r",
+							"    pm.expect(jsonbody.user.user.username).eqls(pm.collectionVariables.get(\"username\"))\r",
+							"})\r",
+							"pm.test(\"check status is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.test(\"check response message \", function () {\r",
+							"    pm.expect(jsonbody.message).eqls(\"updated password succesfully\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{email}}\",\r\n    \"password\":\"{{newpassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://affiliates.tutoruu.com/api/set-password",
+					"protocol": "https",
+					"host": [
+						"affiliates",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"set-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidUpdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"\r",
+							"pm.test(\"check status is 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});\r",
+							"pm.test(\"check response message \", function () {\r",
+							"    pm.expect(jsonbody.message).eqls(\"\\nInvalid `prisma.users.update()` invocation:\\n\\n\\nAn operation failed because it depends on one or more records that were required but not found. Record to update not found.\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"tutor15@test.com\",\r\n    \"password\":\"Mt123456$\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://affiliates.tutoruu.com/api/set-password",
+					"protocol": "https",
+					"host": [
+						"affiliates",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"set-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateTutor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"pm.collectionVariables.set(\"userId\",jsonbody.user)\r",
+							"pm.test(\"validate data \",function(){\r",
 							"    let bool = false\r",
-							"    if(jsonbody[0].rate>=pm.collectionVariables.get(\"minrate2\"))\r",
+							"    if(jsonbody.rate===Number(pm.collectionVariables.get(\"ratenew\")))\r",
 							"    {\r",
-							"        bool=true;\r",
+							"        bool=true\r",
 							"    }\r",
-							"    pm.expect(bool).eqls(true)\r",
+							"    pm.expect(bool).to.be.equal(true)\r",
+							"    pm.expect(jsonbody.freeTrial).to.be.equal(true)\r",
+							"})\r",
+							"pm.test(\"check status is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.collectionVariables.set(\"rate1\",pm.collectionVariables.get(\"rate\"))\r",
+							"pm.collectionVariables.set(\"rate\",pm.collectionVariables.get(\"ratenew\"))\r",
+							"pm.collectionVariables.set(\"ratenew\",pm.collectionVariables.get(\"rate1\"))\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"freeTrial\": {{freeTrial}},\r\n    \"rate\":\"{{ratenew}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.tutoruu.com/api/tutor/{{id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"tutor",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalidUpdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"\r",
+							"pm.test(\"check status is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							"pm.test(\"check response message \", function () {\r",
+							"    pm.expect(jsonbody.name).eqls(\"CastError\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"freeTrial\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.tutoruu.com/api/tutor/{{invalidid}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"tutor",
+						"{{invalidid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editUserprofile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"pm.test(\"validate data \",function(){\r",
+							"    pm.expect(jsonbody.phone).to.be.equal(pm.collectionVariables.get(\"phone\"))\r",
+							"    pm.expect(jsonbody.bio).to.be.equal(pm.collectionVariables.get(\"bio\"))\r",
+							"    pm.expect(jsonbody.classOf).to.be.equal(pm.collectionVariables.get(\"classnew\"))\r",
+							"})\r",
+							"pm.test(\"check status is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.collectionVariables.set(\"class1\",pm.collectionVariables.get(\"class\"))\r",
+							"pm.collectionVariables.set(\"class\",pm.collectionVariables.get(\"classnew\"))\r",
+							"pm.collectionVariables.set(\"classnew\",pm.collectionVariables.get(\"class1\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"fields\":\r\n    {\r\n    \"phone\" : \"{{phone}}\",\r\n    \"bio\":\"{{bio}}\",\r\n    \"classOf\":\"{{classnew}}\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.tutoruu.com/api/user/{{userId}}/fields",
+					"protocol": "https",
+					"host": [
+						"api",
+						"tutoruu",
+						"com"
+					],
+					"path": [
+						"api",
+						"user",
+						"{{userId}}",
+						"fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editUserprofileInvalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonbody = pm.response.json()\r",
+							"\r",
+							"pm.test(\"check status is 500\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(500);\r",
+							"});\r",
+							"pm.test(\"check response message \", function () {\r",
+							"    pm.expect(jsonbody.error.name).eqls(\"CastError\");\r",
 							"})"
 						],
 						"type": "text/javascript",
@@ -349,176 +733,19 @@
 				}
 			],
 			"request": {
-				"method": "GET",
+				"method": "PATCH",
 				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?minRate={{minrate}}",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "minRate",
-							"value": "{{minrate}}"
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"fields\":\r\n    {\r\n    \"phone\" : \"{{phone}}\",\r\n    \"bio\":\"{{bio}}\",\r\n    \"classOf\":\"{{classnew}}\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SortByDsc",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if the tutors are arranged des\", function () {\r",
-							"    for (let i = 0; i < jsonbody.length-1; i++) {\r",
-							"    pm.expect(jsonbody[i].rate).to.be.at.least(jsonbody[i + 1].rate);\r",
-							"}\r",
-							"\r",
-							"})"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?sortBy=ratedsc",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "sortBy",
-							"value": "ratedsc"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SortByAsc",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if the tutors are arranged Asc\", function () {\r",
-							"    for (let i = 0; i < jsonbody.length-1; i++) {\r",
-							"    pm.expect(jsonbody[i].rate).to.be.at.most(jsonbody[i + 1].rate);\r",
-							"}\r",
-							"\r",
-							"})"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?sortBy=rateasc",
-					"protocol": "https",
-					"host": [
-						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "sortBy",
-							"value": "rateasc"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SortByNewest",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\",function(){\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check tutors are sorted by newest\",function(){\r",
-							"    const date1 = new Date(jsonbody[0].creation_date)\r",
-							"    const date2 = new Date(jsonbody[1].creation_date)\r",
-							"    pm.expect(date1).to.be.greaterThan(date2)\r",
-							"\r",
-							"})"
-						],
-						"type": "text/javascript",
-						"packages": {}
 					}
 				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
 				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?sortBy=createdAt",
+					"raw": "https://api.tutoruu.com/api/user/{{invaliduser}}/fields",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -526,93 +753,10 @@
 						"com"
 					],
 					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "sortBy",
-							"value": "createdAt"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SearchByDay&Price",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const jsonbody = pm.response.json()\r",
-							"pm.test(\"check if it is successfull\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"})\r",
-							"pm.test(\"check responseTime is less than 2 sec\",function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
-							"})\r",
-							"pm.test(\"check if the tutor teaches on this day\",function(){\r",
-							"    const days = jsonbody[0].schedule\r",
-							"    let bool=false\r",
-							"    days.forEach(i => {\r",
-							"    if(i.day===pm.collectionVariables.get(\"day\")){\r",
-							"        if(i.slots.length>0){\r",
-							"            bool = true\r",
-							"            return\r",
-							"        }\r",
-							"    }\r",
-							"}\r",
-							");\r",
-							"pm.expect(bool).eqls(true)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"check if the tutor's rate is within the range\", function () {\r",
-							"    let bool = false\r",
-							"    if(jsonbody[0].rate>=pm.collectionVariables.get(\"minrate2\") && jsonbody[0].rate<=pm.collectionVariables.get(\"maxrate\"))\r",
-							"    {\r",
-							"        bool=true;\r",
-							"    }\r",
-							"    pm.expect(bool).eqls(true)\r",
-							"})\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://api.tutoruu.com/tutors/search/new?day={{day}}&minRate={{minrate2}}&maxRate={{maxrate}}",
-					"protocol": "https",
-					"host": [
 						"api",
-						"tutoruu",
-						"com"
-					],
-					"path": [
-						"tutors",
-						"search",
-						"new"
-					],
-					"query": [
-						{
-							"key": "day",
-							"value": "{{day}}"
-						},
-						{
-							"key": "minRate",
-							"value": "{{minrate2}}"
-						},
-						{
-							"key": "maxRate",
-							"value": "{{maxrate}}"
-						}
+						"user",
+						"{{invaliduser}}",
+						"fields"
 					]
 				}
 			},
@@ -643,38 +787,101 @@
 	],
 	"variable": [
 		{
-			"key": "name",
-			"value": "Menna",
+			"key": "email",
+			"value": "tutor1@test.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "Mt123456$",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "tutor1",
+			"type": "string"
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "invaliduser",
+			"value": "tutor12312",
+			"type": "string"
+		},
+		{
+			"key": "invalidid",
+			"value": "662798e39c5403253378221e32",
+			"type": "string"
+		},
+		{
+			"key": "password1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newpassword",
+			"value": "Mt123457$",
+			"type": "string"
+		},
+		{
+			"key": "freeTrial",
+			"value": "true",
+			"type": "string"
+		},
+		{
+			"key": "rate",
+			"value": "120",
+			"type": "string"
+		},
+		{
+			"key": "phone",
+			"value": "0110085654",
+			"type": "string"
+		},
+		{
+			"key": "bio",
+			"value": "Technologyhasrevolutionizedeveryaspectofourlives,andeducationisnoexception.Inrecentyears,theintegrationoftechnologyintomoderneducationhasbroughtaboutsignificantchangesinteachingmethods,learningexperiences",
 			"type": "string"
 		},
 		{
 			"key": "class",
-			"value": "Math",
+			"value": "2019",
 			"type": "string"
 		},
 		{
-			"key": "day",
-			"value": "Friday",
+			"key": "rate1",
+			"value": "100",
 			"type": "string"
 		},
 		{
-			"key": "minrate",
-			"value": "300",
+			"key": "ratenew",
+			"value": "100",
 			"type": "string"
 		},
 		{
-			"key": "minrate2",
-			"value": "150",
+			"key": "rat1",
+			"value": ""
+		},
+		{
+			"key": "class1",
+			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "maxrate",
-			"value": "200",
+			"key": "classnew",
+			"value": "2022",
 			"type": "string"
 		},
 		{
-			"key": "invalidname",
-			"value": "asdasdasdas",
+			"key": "userId",
+			"value": "6627960c9c5403253376bdf9",
 			"type": "string"
 		}
 	]
